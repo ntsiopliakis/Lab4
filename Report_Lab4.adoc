@@ -1,0 +1,246 @@
+:imagesdir: Images
+:figure-caption: Рисунок
+
+== Лабораторная работа №4
+==== Функция *main()*
+
+[source, cpp]
+----
+int main()
+{
+  while(RCC::CR::HSIRDY::NotReady::IsSet());
+  RCC::PLLCFGR::PLLN0::Set(125);
+  RCC::PLLCFGR::PLLP0::Set(3);
+  RCC::PLLCFGR::PLLM0::Set(20);
+  RCC::CR::PLLON::On::Set();
+  while(RCC::CR::PLLRDY::NotReady::IsSet());
+  RCC::CFGR::SW::Pll::Set();
+  while(!RCC::CFGR::SWS::Pll::IsSet());
+
+
+  using PortC = Port<GPIOC>;
+  using PortA = Port<GPIOA>;
+  PortC::Enable();
+  PortA::Enable();
+
+  using LED1pin = Pin<PortC, 5>;
+  using LED2pin = Pin<PortC, 8>;
+  using LED3pin = Pin<PortC, 9>;
+  using LED4pin = Pin<PortA, 5>;
+  using UserLeds = Leds<LED1pin, LED2pin, LED3pin, LED4pin>;
+  UserLeds::Enable();
+
+  using UserButton = Button< Pin< PortC, 13> >;
+  UserButton::Enable();
+
+  while(1)
+  {
+    if(UserButton::WasPressed())
+    {
+      UserLeds::Toggle();
+    }
+  }
+}
+----
+Частота тактирования системной шины выбрана 12.5 МГц. Это ближайшая к 10 МГц допустимая частота PLL (f_PLLmin =  VCOmin/PLLPmax=100 МГц/8=12.5 МГц).
+
+==== Обертка
+Логика работы с кнопкой и светодиодами оформлена ввиде следующего набора шаблонных структур:
+
+* Port<GPIOx>;
+* Pin<Port>;
+* Button<Pin>;
+* Leds<PinArg1, PinArg2,...,PinArgN>
+
+*Port<GPIOx>*:
+[source, cpp]
+----
+template<typename T>
+struct Port
+{
+  using PortType = T;
+
+  static void Enable()
+  {
+
+  }
+    static void Disable()
+  {
+
+  }
+  static void Set(std::uint32_t value)
+  {
+    T::BSSR::Set(value);
+  }
+
+  static void Reset(std::uint32_t value)
+  {
+    T::BSSR::Set(value << 16U);
+  }
+
+  static void Toggle(std::uint32_t value)
+  {
+    T::ODR::Toggle(value);
+  }
+
+  static auto Get()
+  {
+    return T::IDR::Get();
+  }
+
+};
+
+template<>
+void Port<GPIOC>::Enable()
+{
+  RCC::AHB1ENR::GPIOCEN::Enable::Set();
+}
+template<>
+ void Port<GPIOA>::Enable()
+{
+  RCC::AHB1ENR::GPIOAEN::Enable::Set();
+}
+template<>
+void Port<GPIOC>::Disable()
+{
+  RCC::AHB1ENR::GPIOCEN::Disable::Set();
+}
+template<>
+void Port<GPIOA>::Disable()
+{
+  RCC::AHB1ENR::GPIOAEN::Disable::Set();
+}
+----
+В данной структуре имеются методы для включения и выключения тактирования порта, установки регистра ODR, чтения регистра IDR. Методы для включения и выключения тактирования порта специализацированы для каждого значения шаблонного параметра-типа Т (здесь в качестве T может быть GPIOC и GPIOA).
+
+*Pin<Port>*:
+[source, cpp]
+----
+template< typename Port, uint8_t pinNum>
+struct Pin
+{
+  using PortType = typename Port::PortType;
+  static void Set()
+  {
+    Port::Set(1U << pinNum);
+  }
+
+  static void Reset()
+  {
+    Port::Reset(1U << pinNum);
+  }
+
+  static void Toggle()
+  {
+    Port::Toggle(1U << pinNum);
+  }
+
+  static auto IsSet()
+  {
+    return ((Port::Get() & (1U << pinNum)) != 0 );
+  }
+  static void SelectOutputMode()
+  {
+    if(pinNum<16U)
+    {
+      *reinterpret_cast<uint32_t*>(PortType::MODER::Address) &= ~(3U<<(pinNum*2));
+      *reinterpret_cast<uint32_t*>(PortType::MODER::Address) |= 1U<<(pinNum*2);
+    }
+  }
+  static void SelectInputMode()
+  {
+    if(pinNum<16U)
+    {
+      *reinterpret_cast<uint32_t*>(PortType::MODER::Address) &= ~(3U<<(pinNum*2));
+    }
+  }
+};
+----
+В данной структуре имеются методы для установки, сброса, переключения, проверки потенциала на выводе порта. Также имеются методы для выбора режима работы вывода порта.
+
+*Button<Pin>*:
+[source, cpp]
+----
+template<typename Pin>
+struct Button
+{
+  static bool WasPressed()
+  {
+    if(!Pin::IsSet())
+    {
+     for(int i = 0; i < 100; i++);
+     if(!Pin::IsSet())
+     {
+       while(!Pin::IsSet());
+       return true;
+     }
+    }
+    return false;
+  }
+  static void Enable()
+  {
+    Pin::SelectInputMode();
+  }
+};
+----
+В данной структуре имеется метод bool WasPressed(), возвращающий true после отжатия кнопки. Для защиты от дребезга контактов предусмотрена задержка, реализованная пустым циклом. Также имеется метод, переключающий вывод, к которому подключена кнопка, в режим цифрового входа.
+
+*Leds<PinArg1, PinArg2,...,PinArgN>*:
+[source, cpp]
+----
+template<typename ... PinArgs>
+struct Leds
+{
+  static void Toggle()
+  {
+    (PinArgs::Toggle(),...);
+  }
+  static void Enable()
+  {
+    (PinArgs::SelectOutputMode(),...);
+  }
+};
+----
+В данной структуре имеются два метода: метод для переключения группы выводов порта в режим цифрового выхода, а также метод для переключения уровня потенциала на этих выводах.
+Структура представляет собой вариативный шаблон (шаблон с произвольным количеством параметров). Известная проблема, возникающая при использовании вариативных шаблонов -- проблема выделения отдельных аргументов из пака аргументов. Обычный подход к ее решению  -- разделение пака на first и rest -аргументы и рекурсия:
+
+[source, cpp]
+----
+auto Sum()
+{
+  return 0;
+}
+
+template<typename Arg, typename... Args>
+auto Sum(Arg first, Args... rest)
+{
+  return first + Sum(rest...);
+}
+
+int main()
+{
+  std::cout << Sum(1, 2, 3, 4); // 10
+  return 0;
+}
+----
+
+Однако стандарт С++17 открывает возможность обрабатывать пак аргументов по принципу свертки списка (свертка – функция, которая применяет заданную комбинирующую функцию к последовательным парам элементов в списке и возвращает результат).
+
+В качестве примера использования нового синтаксиса можно привести реализацию суммирующей функции за счет правоассоциативной унарной свертки пака аргументов с оператором '+':
+
+[source, cpp]
+----
+template<typename... Args>
+auto Sum(Args... args)
+{
+  return (args + ...);
+}
+
+int main()
+{
+  std::cout << Sum(1, 2, 3, 4, 5) << '\n'; // 15
+  return 0;
+}
+----
+
+В методах структуры *Leds<PinArg1, PinArg2,...,PinArgN>* используется правоассоциативная унарная свертка пака с оператором ',' , приводящая к последовательному выполнению заданного действия над каждым аргументом из пака.

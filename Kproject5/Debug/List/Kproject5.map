@@ -1,0 +1,275 @@
+﻿###############################################################################
+#
+# IAR ELF Linker V8.40.2.214/W32 for ARM                  10/Nov/2020  21:52:10
+# Copyright 2007-2019 IAR Systems AB.
+#
+#    Output file  =
+#        C:\Users\Николаос\Documents\MyIARprojects\Lab4\Kproject5\Debug\Exe\Kproject5.out
+#    Map file     =
+#        C:\Users\Николаос\Documents\MyIARprojects\Lab4\Kproject5\Debug\List\Kproject5.map
+#    Command line =
+#        -f C:\Users\D13C~1\AppData\Local\Temp\EWEE10.tmp
+#        (C:\Users\Николаос\Documents\MyIARprojects\Lab4\Kproject5\Debug\Obj\main.o
+#        C:\Users\Николаос\Documents\MyIARprojects\Lab4\Kproject5\Debug\Obj\startupF411RE.o
+#        --no_out_extension -o
+#        C:\Users\Николаос\Documents\MyIARprojects\Lab4\Kproject5\Debug\Exe\Kproject5.out
+#        --redirect _Printf=_PrintfFullNoMb --redirect _Scanf=_ScanfFullNoMb
+#        --map
+#        C:\Users\Николаос\Documents\MyIARprojects\Lab4\Kproject5\Debug\List\Kproject5.map
+#        --config "C:\Program Files (x86)\IAR Systems\Embedded Workbench
+#        8.3\arm\config\linker\ST\stm32f411xE.icf" --semihosting --entry
+#        __iar_program_start --vfe --enable_stack_usage --utf8_text_in
+#        --text_out utf8)
+#
+###############################################################################
+
+*******************************************************************************
+*** MESSAGES
+***
+
+Warning[Ls015]: [stack usage analysis] at least one function appears to be
+          uncalled. Example: "DummyModule::handler()". A complete list of
+          uncalled functions is in the map file.
+
+
+*******************************************************************************
+*** RUNTIME MODEL ATTRIBUTES
+***
+
+CppFlavor        = *
+__CPP_Exceptions = Disabled
+__CPP_Language   = C++14
+__Heap_Handler   = Basic
+__SystemLibrary  = DLib
+__dlib_version   = 6
+
+
+*******************************************************************************
+*** HEAP SELECTION
+***
+
+The basic heap was selected because no calls to memory allocation
+functions were found in the application outside of system library
+functions, and there are calls to deallocation functions in the
+application.
+
+
+*******************************************************************************
+*** PLACEMENT SUMMARY
+***
+
+"A0":  place at address 0x800'0000 { ro section .intvec };
+"P1":  place in [from 0x800'0000 to 0x807'ffff] { ro };
+define block CSTACK with size = 8K, alignment = 8 { };
+define block HEAP with size = 8K, alignment = 8 { };
+"P2":  place in [from 0x2000'0000 to 0x2001'ffff] {
+          rw, block CSTACK, block HEAP };
+
+No sections matched the following patterns:
+
+  rw  in "P2"
+
+
+  Section   Kind         Address    Size  Object
+  -------   ----         -------    ----  ------
+"A0":                              0x198
+  .intvec   const     0x800'0000   0x198  startupF411RE.o [1]
+                    - 0x800'0198   0x198
+
+"P1":                              0x276
+  .text     ro code   0x800'0198    0xc4  main.o [1]
+  .text     ro code   0x800'025c    0x14  main.o [1]
+  .text     ro code   0x800'0270     0x8  main.o [1]
+  .text     ro code   0x800'0278    0x2c  main.o [1]
+  .text     ro code   0x800'02a4    0x14  main.o [1]
+  .text     ro code   0x800'02b8    0x18  main.o [1]
+  .text     ro code   0x800'02d0    0x18  main.o [1]
+  .text     ro code   0x800'02e8    0x18  main.o [1]
+  .text     ro code   0x800'0300    0x18  main.o [1]
+  .text     ro code   0x800'0318    0x10  main.o [1]
+  .text     ro code   0x800'0328     0xe  main.o [1]
+  .text     ro code   0x800'0336     0xa  main.o [1]
+  .text     ro code   0x800'0340     0xc  main.o [1]
+  .text     ro code   0x800'034c     0xc  main.o [1]
+  .text     ro code   0x800'0358     0xa  main.o [1]
+  .rodata   const     0x800'0362     0x1  unwind_debug.o [6]
+  .text     ro code   0x800'0364     0xc  main.o [1]
+  .text     ro code   0x800'0370    0x10  main.o [1]
+  .text     ro code   0x800'0380    0x10  main.o [1]
+  .text     ro code   0x800'0390    0x22  fpinit_M.o [4]
+  .text     ro code   0x800'03b4    0x1e  cmain.o [5]
+  .text     ro code   0x800'03d2     0x4  low_level_init.o [2]
+  .text     ro code   0x800'03d6     0x4  exit.o [2]
+  .text     ro code   0x800'03dc     0xa  cexit.o [5]
+  .text     ro code   0x800'03e8    0x14  exit.o [6]
+  .text     ro code   0x800'03fc    0x12  startupF411RE.o [1]
+                    - 0x800'040e   0x276
+
+"P2":                             0x2000
+  CSTACK             0x2000'0000  0x2000  <Block>
+    CSTACK  uninit   0x2000'0000  0x2000  <Block tail>
+                   - 0x2000'2000  0x2000
+
+Unused ranges:
+
+         From           To      Size
+         ----           --      ----
+   0x800'040e   0x807'ffff  0x7'fbf2
+  0x2000'2000  0x2001'ffff  0x1'e000
+
+
+*******************************************************************************
+*** STACK USAGE
+***
+
+  Call Graph Root Category  Max Use  Total Use
+  ------------------------  -------  ---------
+  Program entry                 32         32
+  Uncalled function              0          0
+
+
+Program entry
+  "__iar_program_start": 0x800'03ff
+
+  Maximum call chain                               32  bytes
+
+    "__iar_program_start"                           8
+    "__cmain"                                       0
+    "main"                                          8
+    "Button<Pin<Port<GPIOC>, (unsigned char)13>>::WasPressed()"
+                                                    8
+    "Pin<Port<GPIOC>, (unsigned char)13>::IsSet()"
+                                                    8
+    "Port<GPIOC>::Get()"                            0
+
+Uncalled function
+  "DummyModule::handler()": 0x800'03fd
+
+  Maximum call chain                                0  bytes
+
+    "DummyModule::handler()"                        0
+
+
+*******************************************************************************
+*** MODULE SUMMARY
+***
+
+    Module            ro code  ro data  rw data
+    ------            -------  -------  -------
+command line/config:
+    -------------------------------------------
+    Total:
+
+C:\Users\Николаос\Documents\MyIARprojects\Lab4\Kproject5\Debug\Obj: [1]
+    main.o                502
+    startupF411RE.o        18      408
+    -------------------------------------------
+    Total:                520      408
+
+dl7M_tln.a: [2]
+    exit.o                  4
+    low_level_init.o        4
+    -------------------------------------------
+    Total:                  8
+
+dlpp7M_tl_nc.a: [3]
+    -------------------------------------------
+    Total:
+
+m7M_tls.a: [4]
+    fpinit_M.o             34
+    -------------------------------------------
+    Total:                 34
+
+rt7M_tl.a: [5]
+    cexit.o                10
+    cmain.o                30
+    -------------------------------------------
+    Total:                 40
+
+shb_l.a: [6]
+    exit.o                 20
+    unwind_debug.o                   1
+    -------------------------------------------
+    Total:                 20        1
+
+    Gaps                    7
+    Linker created                        8'192
+-----------------------------------------------
+    Grand Total:          629      409    8'192
+
+
+*******************************************************************************
+*** ENTRY LIST
+***
+
+Entry                       Address   Size  Type      Object
+-----                       -------   ----  ----      ------
+?main                    0x800'03b5         Code  Gb  cmain.o [5]
+Button<Pin<Port<GPIOC>, (unsigned char)13>>::Enable()
+                         0x800'0271    0x8  Code  Gb  main.o [1]
+Button<Pin<Port<GPIOC>, (unsigned char)13>>::WasPressed()
+                         0x800'0279   0x2c  Code  Gb  main.o [1]
+CSTACK$$Base            0x2000'0000          --   Gb  - Linker created -
+CSTACK$$Limit           0x2000'2000          --   Gb  - Linker created -
+DummyModule::handler()   0x800'03fd    0x2  Code  Gb  startupF411RE.o [1]
+Leds<Pin<Port<GPIOC>, (unsigned char)5>, Pin<Port<GPIOC>, (unsigned char)8>, Pin<Port<GPIOC>, (unsigned char)9>, Pin<Port<GPIOA>, (unsigned char)5>>::Enable()
+                         0x800'025d   0x14  Code  Gb  main.o [1]
+Leds<Pin<Port<GPIOC>, (unsigned char)5>, Pin<Port<GPIOC>, (unsigned char)8>, Pin<Port<GPIOC>, (unsigned char)9>, Pin<Port<GPIOA>, (unsigned char)5>>::Toggle()
+                         0x800'02a5   0x14  Code  Gb  main.o [1]
+Pin<Port<GPIOA>, (unsigned char)5>::SelectOutputMode()
+                         0x800'0301   0x18  Code  Gb  main.o [1]
+Pin<Port<GPIOA>, (unsigned char)5>::Toggle()
+                         0x800'0359    0xa  Code  Gb  main.o [1]
+Pin<Port<GPIOC>, (unsigned char)13>::IsSet()
+                         0x800'0329    0xe  Code  Gb  main.o [1]
+Pin<Port<GPIOC>, (unsigned char)13>::SelectInputMode()
+                         0x800'0319   0x10  Code  Gb  main.o [1]
+Pin<Port<GPIOC>, (unsigned char)5>::SelectOutputMode()
+                         0x800'02b9   0x18  Code  Gb  main.o [1]
+Pin<Port<GPIOC>, (unsigned char)5>::Toggle()
+                         0x800'0337    0xa  Code  Gb  main.o [1]
+Pin<Port<GPIOC>, (unsigned char)8>::SelectOutputMode()
+                         0x800'02d1   0x18  Code  Gb  main.o [1]
+Pin<Port<GPIOC>, (unsigned char)8>::Toggle()
+                         0x800'0341    0xc  Code  Gb  main.o [1]
+Pin<Port<GPIOC>, (unsigned char)9>::SelectOutputMode()
+                         0x800'02e9   0x18  Code  Gb  main.o [1]
+Pin<Port<GPIOC>, (unsigned char)9>::Toggle()
+                         0x800'034d    0xc  Code  Gb  main.o [1]
+Port<GPIOA>::Enable()    0x800'01a5    0xc  Code  Gb  main.o [1]
+Port<GPIOA>::Toggle(unsigned int)
+                         0x800'0381   0x10  Code  Gb  main.o [1]
+Port<GPIOC>::Enable()    0x800'0199    0xc  Code  Gb  main.o [1]
+Port<GPIOC>::Get()       0x800'0365    0xc  Code  Gb  main.o [1]
+Port<GPIOC>::Toggle(unsigned int)
+                         0x800'0371   0x10  Code  Gb  main.o [1]
+Region$$Table$$Base             0x0          --   Gb  - Linker created -
+Region$$Table$$Limit            0x0          --   Gb  - Linker created -
+__cmain                  0x800'03b5         Code  Gb  cmain.o [5]
+__exit                   0x800'03e9   0x14  Code  Gb  exit.o [6]
+__iar_debug_exceptions   0x800'0362    0x1  Data  Gb  unwind_debug.o [6]
+__iar_init_vfp           0x800'0391         Code  Gb  fpinit_M.o [4]
+__iar_program_start      0x800'03ff   0x10  Code  Gb  startupF411RE.o [1]
+__low_level_init         0x800'03d3    0x4  Code  Gb  low_level_init.o [2]
+__vector_table           0x800'0000  0x198  Data  Gb  startupF411RE.o [1]
+_call_main               0x800'03c1         Code  Gb  cmain.o [5]
+_exit                    0x800'03dd         Code  Gb  cexit.o [5]
+_main                    0x800'03cf         Code  Gb  cmain.o [5]
+exit                     0x800'03d7    0x4  Code  Gb  exit.o [2]
+main                     0x800'01b1   0x9c  Code  Gb  main.o [1]
+
+
+[1] = C:\Users\Николаос\Documents\MyIARprojects\Lab4\Kproject5\Debug\Obj
+[2] = dl7M_tln.a
+[3] = dlpp7M_tl_nc.a
+[4] = m7M_tls.a
+[5] = rt7M_tl.a
+[6] = shb_l.a
+
+    629 bytes of readonly  code memory
+    409 bytes of readonly  data memory
+  8'192 bytes of readwrite data memory
+
+Errors: none
+Warnings: 1
